@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import {
   Image,
   KeyboardAvoidingView,
@@ -21,6 +22,12 @@ import {
 } from './styles';
 
 const SignIn: React.FC = () => {
+  const navigation = useNavigation();
+
+  const handleCreateAccount = useCallback(() => {
+    navigation.navigate('SignUp');
+  }, []);
+
   return (
     <>
       <KeyboardAvoidingView
@@ -60,7 +67,7 @@ const SignIn: React.FC = () => {
 
       <CreateAccountButton
         onPress={() => {
-          console.log('criar conta');
+          handleCreateAccount();
         }}
       >
         <Icon name="log-in" size={20} color="#ff9000" />
