@@ -1,29 +1,72 @@
 import React from 'react';
-import { Image } from 'react-native';
+import {
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
 import logoImg from '../../assets/logo.png';
-import { Container, Title } from './styles';
+import {
+  Container,
+  Title,
+  ForgotPassword,
+  ForgotPasswordText,
+  CreateAccountButton,
+  CreateAccountButtonText,
+  Icon,
+} from './styles';
 
 const SignIn: React.FC = () => {
   return (
-    <Container>
-      <Image source={logoImg} />
-      <Title>Faça seu logon</Title>
+    <>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        enabled
+      >
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ flex: 1 }}
+        >
+          <Container>
+            <Image source={logoImg} />
+            <Title>Faça seu logon</Title>
 
-      <Input name="email" icon="mail" placeholder="E-mail" />
-      <Input name="password" icon="lock" placeholder="Senha" />
+            <Input name="email" icon="mail" placeholder="E-mail" />
+            <Input name="password" icon="lock" placeholder="Senha" />
 
-      <Button
+            <Button
+              onPress={() => {
+                console.log('deu certo');
+              }}
+            >
+              Entrar
+            </Button>
+
+            <ForgotPassword
+              onPress={() => {
+                console.log('esqueci minha senha');
+              }}
+            >
+              <ForgotPasswordText>Esqueci minha senha</ForgotPasswordText>
+            </ForgotPassword>
+          </Container>
+        </ScrollView>
+      </KeyboardAvoidingView>
+
+      <CreateAccountButton
         onPress={() => {
-          console.log('deu certo');
+          console.log('criar conta');
         }}
       >
-        Entrar
-      </Button>
-    </Container>
+        <Icon name="log-in" size={20} color="#ff9000" />
+        <CreateAccountButtonText>Criar conta</CreateAccountButtonText>
+      </CreateAccountButton>
+    </>
   );
 };
 
