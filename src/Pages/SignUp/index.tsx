@@ -5,6 +5,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  TextInput,
 } from 'react-native';
 
 import { Form } from '@unform/mobile';
@@ -23,6 +24,9 @@ import {
 } from './styles';
 
 const SignUp: React.FC = () => {
+  const emailRef = useRef<TextInput>(null);
+  const passwordRef = useRef<TextInput>(null);
+
   const formRef = useRef<FormHandles>(null);
   const navigation = useNavigation();
 
@@ -50,10 +54,45 @@ const SignUp: React.FC = () => {
             <Title>Crie sua conta</Title>
 
             <Form ref={formRef} onSubmit={handleCreateAccount}>
-              <Input name="name" icon="user" placeholder="Nome" />
-              <Input name="email" icon="mail" placeholder="E-mail" />
-              <Input name="password" icon="lock" placeholder="Senha" />
+              <Input
+                name="name"
+                icon="user"
+                placeholder="Nome"
+                autoCapitalize="words"
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  emailRef.current?.focus();
+                }}
+              />
+
+              <Input
+                ref={emailRef}
+                name="email"
+                icon="mail"
+                placeholder="E-mail"
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="email-address"
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  passwordRef.current?.focus();
+                }}
+              />
+
+              <Input
+                ref={passwordRef}
+                name="password"
+                icon="lock"
+                placeholder="Senha"
+                secureTextEntry
+                textContentType="newPassword"
+                returnKeyType="send"
+                onSubmitEditing={() => {
+                  formRef.current?.submitForm();
+                }}
+              />
             </Form>
+
             <Button
               onPress={() => {
                 formRef.current?.submitForm();
