@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import {
   Image,
@@ -6,6 +6,9 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+
+import { Form } from '@unform/mobile';
+import { FormHandles } from '@unform/core';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -20,10 +23,15 @@ import {
 } from './styles';
 
 const SignUp: React.FC = () => {
+  const formRef = useRef<FormHandles>(null);
   const navigation = useNavigation();
 
   const handleGoBackLogon = useCallback(() => {
     navigation.goBack();
+  }, []);
+
+  const handleCreateAccount = useCallback((data: object) => {
+    console.log(data);
   }, []);
 
   return (
@@ -41,13 +49,14 @@ const SignUp: React.FC = () => {
             <Image source={logoImg} />
             <Title>Crie sua conta</Title>
 
-            <Input name="name" icon="user" placeholder="Nome" />
-            <Input name="email" icon="mail" placeholder="E-mail" />
-            <Input name="password" icon="lock" placeholder="Senha" />
-
+            <Form ref={formRef} onSubmit={handleCreateAccount}>
+              <Input name="name" icon="user" placeholder="Nome" />
+              <Input name="email" icon="mail" placeholder="E-mail" />
+              <Input name="password" icon="lock" placeholder="Senha" />
+            </Form>
             <Button
               onPress={() => {
-                console.log('deu certo');
+                formRef.current?.submitForm();
               }}
             >
               Entrar
