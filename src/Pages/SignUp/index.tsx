@@ -6,10 +6,13 @@ import {
   Platform,
   ScrollView,
   TextInput,
+  Alert,
 } from 'react-native';
+import * as Yup from 'yup';
 
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
+import getValidationError from '../../utils/getValidationError';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -23,6 +26,12 @@ import {
   Icon,
 } from './styles';
 
+interface SiginUpFormData {
+  name: string;
+  email: string;
+  password: string;
+}
+
 const SignUp: React.FC = () => {
   const emailRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
@@ -34,8 +43,32 @@ const SignUp: React.FC = () => {
     navigation.goBack();
   }, []);
 
-  const handleCreateAccount = useCallback((data: object) => {
-    console.log(data);
+  const handleCreateAccount = useCallback(async (data: SiginUpFormData) => {
+    try {
+      formRef.current?.setErrors({});
+
+      const schema = Yup.object().shape({
+        name: Yup.string().required(),
+        email: Yup.string().email('Digite um e-mail válido.').required(),
+        password: Yup.string().min(6, 'No mínino 6 dígitos.'),
+      });
+
+      await schema.validate(data, {
+        abortEarly: false,
+      });
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        const errors = getValidationError(err);
+        formRef.current?.setErrors(errors);
+
+        return;
+      }
+
+      Alert.alert(
+        'Erro no cadastro.',
+        'Ocorreu um erro ao fazer cadastro, tente novamente.',
+      );
+    }
   }, []);
 
   return (
@@ -87,6 +120,7 @@ const SignUp: React.FC = () => {
                 secureTextEntry
                 textContentType="newPassword"
                 returnKeyType="send"
+                maxLength={6}
                 onSubmitEditing={() => {
                   formRef.current?.submitForm();
                 }}
